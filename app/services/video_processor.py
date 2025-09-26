@@ -1,66 +1,61 @@
 from loguru import logger
 import asyncio
+import os
 
 class VideoProcessor:
-    async def process_record(self, record_id: int) -> dict:
+    async def process_record(self, external_video_id: str) -> dict:
         """
         Process a single record through all stages
-        Runs metadata, transcript, and frame generation in parallel,
-        then runs cleansing after they complete
+        Simply prints the external_video_id in each stage
         """
         try:
             # Run the first three processes in parallel
             metadata, transcript, frames = await asyncio.gather(
-                self._fetch_metadata(record_id),
-                self._generate_transcript(record_id),
-                self._generate_video_frames(record_id)
+                self._fetch_metadata(external_video_id),
+                self._generate_transcript(external_video_id),
+                self._generate_video_frames(external_video_id)
             )
             
-            # Wait for all parallel processes to complete before cleansing
-            cleaned_data = await self._cleanse_data(record_id, metadata, transcript, frames)
+            # Run cleansing process
+            cleaned_data = await self._cleanse_data(external_video_id)
 
             return {
-                "record_id": record_id,
+                "external_video_id": external_video_id,
                 "status": "success",
-                "stages": {
-                    "metadata": metadata,
-                    "transcript": transcript,
-                    "frames": frames,
-                    "cleansing": cleaned_data
-                }
+                "message": "All processes completed successfully"
             }
         except Exception as e:
-            logger.error(f"Error processing record {record_id}: {str(e)}")
+            logger.error(f"Error processing video {external_video_id}: {str(e)}")
             return {
-                "record_id": record_id,
+                "external_video_id": external_video_id,
                 "status": "error",
                 "error": str(e)
             }
 
-    async def _fetch_metadata(self, record_id: int) -> dict:
+    async def _fetch_metadata(self, external_video_id: str) -> dict:
         """
-        Placeholder for metadata fetching process
+        Simply prints the external_video_id for metadata process
         """
-        logger.info(f"Fetching metadata for record {record_id}")
-        return {"status": "completed", "message": f"Metadata fetched for record {record_id}"}
+        print(f"Metadata process - Video ID: {external_video_id}")
+        return {"status": "completed"}
 
-    async def _generate_transcript(self, record_id: int) -> dict:
+    async def _generate_transcript(self, external_video_id: str) -> dict:
         """
-        Placeholder for transcript generation process
+        Simply prints the external_video_id for transcript process
         """
-        logger.info(f"Generating transcript for record {record_id}")
-        return {"status": "completed", "message": f"Transcript generated for record {record_id}"}
+        print(f"Transcript process - Video ID: {external_video_id}")
+        return {"status": "completed"}
 
-    async def _generate_video_frames(self, record_id: int) -> dict:
+    async def _generate_video_frames(self, external_video_id: str) -> dict:
         """
-        Placeholder for video frame generation process
+        Simply prints the external_video_id for frame generation process
         """
-        logger.info(f"Generating video frames for record {record_id}")
-        return {"status": "completed", "message": f"Video frames generated for record {record_id}"}
+        print(f"Frame generation process - Video ID: {external_video_id}")
+        return {"status": "completed"}
 
-    async def _cleanse_data(self, record_id: int, metadata: dict, transcript: dict, frames: dict) -> dict:
+    async def _cleanse_data(self, external_video_id: str) -> dict:
         """
-        Placeholder for data cleansing process
+        Simply prints the external_video_id for cleansing process
         """
-        logger.info(f"Cleansing data for record {record_id}")
-        return {"status": "completed", "message": f"Data cleansed for record {record_id}"}
+        print(f"Data cleansing process - Video ID: {external_video_id}")
+        return
